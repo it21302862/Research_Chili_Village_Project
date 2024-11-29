@@ -37,6 +37,23 @@ Using OpenCV for such tasks helps in automating the process of image analysis, w
 
 ![MongoDB Structure](images/db_structure.png)
 
+Hashing to Prevent Duplicate Data
+Hashing is used to uniquely identify each image and prevent storing duplicates in the database. In this project, we generate a hash for each image by applying the MD5 hashing algorithm.
+
+Why Hashing?
+
+Uniqueness: Hashing generates a unique identifier (a hash value) for the given image. Even a small change in the image would result in a completely different hash.
+Efficiency: By generating a hash and storing it in the database, we can quickly check if an image has already been processed by looking for the hash in the database.
+Duplicate Detection: Before processing the image, we calculate its hash and check if the hash already exists in the database. If it does, we skip processing and return a message indicating the image has already been processed.
+How It Works:
+
+We use the MD5 algorithm from Python's hashlib library to compute the hash of the image.
+The resulting hash is then stored in the database along with other data like classification and market recommendation.
+Before saving a new image, we check if the hash exists in the database to avoid processing and saving the same image multiple times.
+Using hashing ensures that the system is efficient and prevents unnecessary storage of duplicate images.
+
+![Hashing Images](images/hashing.png)
+
 #Upload file to the predict Endpoint & check the trained model(Anthacnose_Disease)
 
 ![Upload file to the predict Endpoint & check the trained model(Anthacnose_Disease)](images/chili_pepper_anthacnose.png)
