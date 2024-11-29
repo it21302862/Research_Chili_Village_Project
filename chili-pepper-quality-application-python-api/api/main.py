@@ -138,5 +138,41 @@ async def predict(file: UploadFile = File(...)):
         'detected_size': size_in_feet if size_in_feet else "N/A"
     }
 
+@app.get("/report")
+async def get_report():
+    # Dynamically calculate the total count for each class
+    chili_healthy_count = collection.count_documents({'class': 'chili_healthy'})
+    chili_red_count = collection.count_documents({'class': 'chili_red'})
+    chili_anthacnose_count = collection.count_documents({'class': 'chili_anthacnose'})
+
+    # Get the market recommendations for each class
+    healthy_market_recommendations = {
+        "High-level market": collection.count_documents({'class': 'chili_healthy', 'market_recommendation': 'High-level market'}),
+        "Lower-level market": collection.count_documents({'class': 'chili_healthy', 'market_recommendation': 'Lower-level market'})
+    }
+    red_market_recommendations = {
+        "Not suitable for market": chili_red_count  
+    }
+    anthacnose_market_recommendations = {
+        "Not suitable for market": chili_anthacnose_count  
+    }
+
+    # Return the report
+    return {
+        'chili_healthy': {
+            'total_count': chili_healthy_count,
+            'market_recommendations': healthy_market_recommendations,
+        },
+        'chili_red': {
+            'total_count': chili_red_count,
+            'market_recommendations': red_market_recommendations,
+        },
+        'chili_anthacnose': {
+            'total_count': chili_anthacnose_count,
+            'market_recommendations': anthacnose_market_recommendations,
+        }
+    }
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)
